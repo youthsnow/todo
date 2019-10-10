@@ -1,0 +1,163 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <!--todo category-->
+    <record model="ir.ui.view" id="todo_category_list">
+      <field name="name">Todo Category list</field>
+      <field name="model">todo.category</field>
+      <field name="arch" type="xml">
+        <tree string="Todo Category" >
+          <field name="name"/>
+          <field name="task_count" sum="总数"/>
+          <field name="task_ids" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="todo_category_form">
+      <field name="name">Todo Category Form</field>
+      <field name="model">todo.category</field>
+       <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="name"/>
+              </group>
+              <group>
+                <field name="task_count"/>
+              </group>
+            </group>
+                <notebook>
+                    <page string="待办事项" create="0" delete="0" edit="0">
+                      <field name="task_ids">
+                        <tree>
+                          <field name="name"/>
+                          <field name="is_done"/>
+                          <field name="priority"/>
+                          <field name="deadline"/>
+                          <field name="is_expired"/>
+                        </tree>
+                      </field>
+                    </page>
+                </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!--todo task-->
+    <record model="ir.ui.view" id="todo_task_list">
+      <field name="name">Todo Task list</field>
+      <field name="model">todo.task</field>
+      <field name="arch" type="xml">
+        <tree string="todo" decoration-danger="is_expired">
+          <field name="name"/>
+          <field name="category_id"/>
+          <field name="is_done"/>
+          <field name="priority"/>
+          <field name="deadline"/>
+          <field name="is_expired"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="todo_task_form">
+      <field name="name">Todo Task Form</field>
+      <field name="model">todo.task</field>
+       <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="priority"/>
+              </group>
+              <group>
+                <field name="is_done"/>
+                <field name="deadline"/>
+                <field name="is_expired"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="act_todo_task_win">
+      <field name="name">Todo task Window</field>
+      <field name="res_model">todo.task</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+     <record model="ir.actions.act_window" id="act_todo_category_win">
+      <field name="name">Todo category Window</field>
+      <field name="res_model">todo.category</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.ui.view" id="toto_task_search">
+      <field name="name">待办事项搜索</field>
+      <field name="model">todo.task</field>
+      <field name="arch"  type="xml">
+        <search string="待办事项">
+          <filed name="name"/>
+          <filed name="category_id"/>
+          <separator/>
+          <!--字段名  运算符 值-->
+          <filter string="未完成" name="undone" domain="[('is_done','=',False)]"/>
+          <filter string="完成" name="done" domain="[('is_done','=',True)]"/>
+          <separator/>
+          <filter string="待办" name="toto" domain="[('priority','=','todo')]"/>
+          <filter string="普通" name="normal" domain="[('priority','=',normal)]"/>
+          <filter string="紧急" name="urgency" domain="[('priority','=',urgency)]"/>
+          <separator/>
+          <group expand="0" string="分组">
+            <filter string="分类" name="category" domain="[]" context="{'group_by':'category_id'}"/>
+            <filter string="紧急程度" name="priority" domain="[]" context="{'group_by':'priority'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+
+    <record model="ir.actions.act_url" id="act_act_open_baidu">
+      <field name="name">打开百度</field>
+      <field name="target">new</field>
+      <field name="url">http://www.baidu.com</field>
+    </record>
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="todo.action_server">
+      <field name="name">Todo server</field>
+      <field name="model_id" ref="model_todo_todo"/>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+
+-->
+    <!-- Top menu item -->
+
+    <menuitem name="Todo" id="menu_root"/>
+    <menuitem name="Todo Manager" id="menu_todo_manager" parent="menu_root"/>
+
+    <menuitem name="Open Baidu" id="menu_open_baidu" parent="menu_root"
+              action="act_act_open_baidu" sequence="100"/>
+
+    <menuitem name="Todo Category" id="menu_todo_category_list" parent="menu_todo_manager"
+              action="act_todo_category_win" sequence="1"/>
+    <menuitem name="Todo Task" id="menu_todo_task_list" parent="menu_todo_manager"
+              action="act_todo_task_win" sequence="3"/>
+
+
+  </data>
+</odoo>

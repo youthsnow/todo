@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acc_todo_category,todo.category,model_todo_category,,1,1,1,1
+acc_todo_todo,todo.task,model_todo_task,,1,1,1,1
